@@ -1,13 +1,24 @@
+import json
+import os
 import requests
 from bs4 import BeautifulSoup
-import json
+from dotenv import load_dotenv
+
+load_dotenv()
 
 UNIVERSITY = "USC"
 URL = "https://engage.usc.edu/club_signup?view=all&"
 
-def fetch_page(url):
+def fetch_clubs(url):
+    print(f"Fetching club directory for {UNIVERSITY}...")
     headers = {"User-Agent": "Mozilla/5.0"}
-    print(f"Fetching club directory from {url}...")
+    res = requests.get(url, headers=headers)
+    print(f"Status code: {res.status_code}")
+    return res.text
+
+def fetch_clubs(url):
+    print(f"Fetching club directory for {UNIVERSITY}...")
+    headers = {"User-Agent": "Mozilla/5.0"}
     res = requests.get(url, headers=headers)
     print(f"Status code: {res.status_code}")
     return res.text
@@ -21,31 +32,56 @@ def parse_clubs(html):
         if not h2:
             continue
 
-        name = h2.get_text(strip=True)
+        # Name is just the text inside the <a> tag within h2
         link_tag = h2.find("a")
-        url = link_tag["href"] if link_tag else ""
+        if not link_tag:
+            continue
+        name = link_tag.get_text(strip=True)
+        website = link_tag["href"].strip() if link_tag.get("href") else ""
 
+        # Org type and categories are in a separate element after h2
+        # looks like "Recognized Student Organization (RSO) - Academic, Career"
+        org_type = ""
+        categories = []
+        full_text = li.get_text(separator="|", strip=True)
+        for part in full_text.split("|"):
+            part = part.strip()
+            if "RSO" in part or "Student Government" in part or "FSLD" in part or "ORSL" in part or "RCC" in part or "Viterbi" in part or "School or Department" in part or "Residential" in part:
+                if " - " in part:
+                    org_type = part.split(" - ")[0].strip()
+                    categories = [c.strip() for c in part.split(" - ")[1].split(",")]
+                else:
+                    org_type = part.strip()
+                break
+
+        # Mission
         text_block = li.get_text(separator=" ", strip=True)
         mission = ""
         if "Mission" in text_block:
-            mission = text_block.split("Mission")[-1].split("Membership Benefits")[0].strip()
+            mission = text_block.split("Mission")[-1].split("Membership Benefits")[0]
+            mission = mission.strip().lstrip(":").strip()[:400]
 
-        categories = []
-        for part in li.get_text(separator="|", strip=True).split("|"):
-            part = part.strip()
-            if any(cat in part for cat in [
-                "Academic", "Career", "Social", "Service", "Pre-Professional",
-                "Ethnic/Cultural", "Health & Wellness", "Spiritual", "Political",
-                "Recreation", "Environmental", "Visual & Performing Arts", "Design Team"
-            ]):
-                categories = [c.strip() for c in part.split(",")]
+        # Membership benefits
+        benefits = ""
+        if "Membership Benefits" in text_block:
+            benefits = text_block.split("Membership Benefits")[-1].split("Contact")[0]
+            benefits = benefits.strip().lstrip(":").strip()[:400]
+
+        # Contact
+        contact = ""
+        if "Contact:" in text_block:
+            contact = text_block.split("Contact:")[-1].split("Lifetime")[0].strip()
 
         clubs.append({
             "name": name,
-            "url": url,
+            "org_type": org_type,
             "categories": categories,
-            "mission": mission[:300],
-            "university": UNIVERSITY,  # tag each club with its school
+            "mission": mission,
+            "membership_benefits": benefits,
+            "contact": contact,
+            "website": website,
+            "university": UNIVERSITY,
+            "source_url": URL,
         })
 
     return clubs
@@ -56,15 +92,16 @@ def save_to_json(clubs, filename="clubs.json"):
     print(f"Saved {len(clubs)} clubs to {filename}")
 
 def scrape(url):
-    html = fetch_page(url)
+    html = fetch_clubs(url)
     clubs = parse_clubs(html)
     return clubs
 
+# --- Run ---
 clubs = scrape(URL)
 
 for club in clubs[:5]:
     print(f"\nName: {club['name']}")
-    print(f"University: {club['university']}")
+    print(f"Org Type: {club['org_type']}")
     print(f"Categories: {club['categories']}")
     print(f"Mission: {club['mission'][:100]}")
     print("---")
