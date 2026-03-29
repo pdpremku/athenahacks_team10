@@ -14,10 +14,10 @@ def cosine_similarity(vecA, vecB):
         return 0.0
     return dot_product / (normA * normB)
 
-def get_club_recommendations(userText):
+def get_club_recommendations(gender, major, userText):
     
     load_dotenv()
-    userText = "I am a computer science major interested in machine learning and Indian music."
+    #userText = "I am a computer science major interested in machine learning and Indian music."
     
     # Getting user embedding
     if userText == "I am a computer science major interested in machine learning and Indian music.":
@@ -85,19 +85,19 @@ def get_club_recommendations(userText):
         For each club, explain why it is a good fit for the user's interests. Be specific and concise.
         """
     
-    text_file = open("Output.txt", "w")
-    text_file.write(prompt)
-    text_file.close()
+        text_file = open("Output.txt", "w")
+        text_file.write(prompt)
+        text_file.close()
 
-    client = genai.Client(api_key="AIzaSyD9YXvJG8HATmvMKRt7xTpLJpbfjiW2iko")
+    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
     response = client.models.generate_content(
-        model="gemini-2.0-flash",
+        model="gemini-2.5-flash",
         config=types.GenerateContentConfig(
         system_instruction="You are a club advisor. Be specific and concise."),
         contents=prompt
     )
     
-    print(response.text)
+    return response.text
 
 
