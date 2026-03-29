@@ -257,45 +257,50 @@ export default function ClubAdvisor() {
   };
 
   const applyTranscript = (transcript) => {
-    const clean = safeSpeakText(transcript);
-    if (!clean) return;
+  const clean = safeSpeakText(transcript);
+  if (!clean) return;
 
-    const lower = clean.toLowerCase();
+  const lower = clean.toLowerCase();
 
-    if (step === STEPS.GENDER) {
-      if (lower.includes("female")) {
-        void handleGender("female");
-        return;
-      }
-      if (lower.includes("male")) {
-        void handleGender("male");
-        return;
-      }
-      if (lower.includes("other")) {
-        void handleGender("other");
-        return;
-      }
-      setVoiceStatus("Say male, female, or other.");
+  if (step === STEPS.GENDER) {
+    if (lower.includes("female") || lower.includes("woman") || lower.includes("girl")) {
+      void handleGender("female");
       return;
     }
 
-    if (step === "gender-other") {
-      void submitGenderOther(clean);
+    if (lower.includes("male") || lower.includes("man") || lower.includes("boy")) {
+      void handleGender("male");
       return;
     }
 
-    if (step === STEPS.MAJOR) {
-      void submitMajor(clean);
+    if (lower.includes("other") || lower.includes("nonbinary") || lower.includes("non-binary")) {
+      void handleGender("other");
       return;
     }
 
-    if (step === STEPS.ABOUT) {
-      void submitAbout(clean);
-      return;
-    }
+    setVoiceStatus("Say male, female, or other.");
+    return;
+  }
 
+  if (step === "gender-other") {
     setInputVal(clean);
-  };
+    void handleGenderOtherConfirm();
+    return;
+  }
+
+  if (step === STEPS.MAJOR) {
+    setInputVal(clean);
+    setMajor(clean);
+    return;
+  }
+
+  if (step === STEPS.ABOUT) {
+    setInputVal(clean);
+    return;
+  }
+
+  setInputVal(clean);
+};
 
   const pickRecorderMimeType = () => {
   const candidates = [
