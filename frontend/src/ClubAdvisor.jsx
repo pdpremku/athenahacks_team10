@@ -19,6 +19,7 @@ const STEPS = {
   DONE: "done",
 };
 
+
 const VOICE_TEXT = "Click space to continue with voice speaking.";
 
 function safeSpeakText(text) {
