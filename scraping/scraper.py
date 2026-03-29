@@ -46,12 +46,13 @@ def parse_clubs(html):
         full_text = li.get_text(separator="|", strip=True)
         for part in full_text.split("|"):
             part = part.strip()
-            if "RSO" in part or "Student Government" in part or "FSLD" in part or "ORSL" in part or "RCC" in part or "Viterbi" in part or "School or Department" in part or "Residential" in part:
-                if " - " in part:
-                    org_type = part.split(" - ")[0].strip()
-                    categories = [c.strip() for c in part.split(" - ")[1].split(",")]
+            if any(t in part for t in ["RSO", "Student Government", "FSLD", "ORSL", "RCC", "Viterbi", "School or Department", "Residential"]):
+                clean = " ".join(part.split())
+                if " - " in clean:
+                    org_type = clean.split(" - ")[0].strip()
+                    categories = [c.strip() for c in clean.split(" - ")[1].split(",")]
                 else:
-                    org_type = part.strip()
+                    org_type = clean
                 break
 
         # Mission
