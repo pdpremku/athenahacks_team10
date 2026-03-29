@@ -217,12 +217,9 @@ export default function ClubAdvisor() {
     });
 
     const data = await response.json();
-    const clubs = data.clubs;
+    const result = data.clubs;
 
-    // show each club as a message
-    for (const club of clubs) {
-      await botSay(`🎯 ${club.name} — ${club.reason}`, 800);
-    }
+    await botSay(result, 800);
 
     setStep(STEPS.DONE);
   } catch (err) {

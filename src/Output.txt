@@ -1,0 +1,12 @@
+
+    The user is looking for clubs based on this interest: "I am a computer science major interested in AI and machine learning, and I want to find clubs that align with my interests and help me grow my skills in these areas. I am also looking for Indian music clubs that can provide a creative outlet and a sense of community."
+
+    Here are the top 5 most relevant clubs based on semantic similarity:
+    - Indian Music Association: Indian Music Association is a cultural student organization dedicated to celebrating and promoting the rich musical heritage of India. Our goal is to build a strong platform, working with various local musicians, for students to explore Indian music. We also aim to foster a sense of community among Indian musicians at USC through workshops, performance opportunities, etc. We invite all levels of e (similarity: 0.742)
+- Music Meditation Club: The Music Meditation Club serves to alleviate participants from stress and anxiety by mindful breathing and musical meditation. Our aim is to make a positive impact on campus with a feeling of peace and creativity through the power of sound. (similarity: 0.728)
+- Association for Computing Machinery: The Association for Computing Machinery (ACM) is USC's student chapter of the international membership organization for Computer Science professionals. We are the largest student-run computer science organization on campus and are committed to preparing our members for careers in the industry through events such as hackathons, technical workshops, industry networking, and community building. (similarity: 0.709)
+- Asli Baat Acappella: Asli Baat is committed to creating an enriching and welcoming a cappella experience for both members and audiences. Rooted in South Asian musical traditions, we celebrate cultural fusion and invite students of all backgrounds to join, learn, and share their voices. (similarity: 0.701)
+- HackSC: HackSC is a hackathon with a mission. Located in the heart of sunny Los Angeles, we provide our participants with a weekend full of innovation, connection, and education. In an interdisciplinary endeavor, over 800 hackers, designers, and visionaries engage in workshops, listen to speakers, and develop programs, tools, and build relationships that last for life. Every year, we recruit software deve (similarity: 0.657)
+
+    For each club, explain why it is a good fit for the user's interests. Be specific and concise.
+    
