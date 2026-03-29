@@ -1,41 +1,27 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pymongo import MongoClient
-from dotenv import load_dotenv
-import google.generativeai as genai
-import os
-import json
-
-load_dotenv()
+from pydantic import BaseModel
+import geminiapi
 
 app = FastAPI()
 
-# allows your frontend to talk to the backend
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # tighten this in production
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# connect to MongoDB
-client = MongoClient(os.getenv("MONGODB_URI"))
-db = client["club-matcher"]
-clubs_collection = db["clubs"]
+class UserProfile(BaseModel):
+    gender: str
+    major: str
+    about: str
 
-# connect to Gemini
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-1.5-flash")
-
-@app.post("/match")
-async def match_clubs(user: dict):
-    # get all clubs from MongoDB
-    clubs = list(clubs_collection.find({}, {"_id": 0}))
+@app.post("/recommend")
+async def recommend(profile: UserProfile):
+    print(profile.gender, profile.major, profile.about)
+    # your club-matching logic here
+    club_recommendations = geminiapi.get_club_recommendations(profile.about)
+        
     
-    prompt = f"""
-    Student profile: {user}
-    Available clubs: {clubs}
-    
-    Return the top 5 matching clubs as a JSON array with fields:
-    name, reason, match (high or medium)
-    Return ONLY the JSON, no extra text.
-    """
-    
-    response = model.generate_content(prompt)
-    matches = json.loads(response.text)
-    return {"matches": matches}
+    return { "clubs": club_recommendations}
