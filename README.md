@@ -25,4 +25,10 @@ Paste the link `http://localhost:5173/` into your browser of choice and enter to
 ## 5. How to use the chatbot
 Answer queries as they appear on the screen. Loading can take a long time due to us being on free tier Gemini API, so please be patient.
 
+## 6. Team Contributions
+Latha: Gemini API, recommendation algo, and backend integration
+Ruina: MongoDB, data preprocessing, and frontend/backend integration
+Jiya: USC RSO webscraping, data preprocessing, and ElevenLabs integration (NLP)
+Jenny: Frontend integration, team management, and design
+
 Happy club hunting!
